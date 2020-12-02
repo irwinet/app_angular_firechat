@@ -29,10 +29,18 @@ export class ChatService {
   }
 
   login(proveedor: string) {
-    this.authFire.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+
+    if(proveedor === 'google'){
+      this.authFire.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+    else{
+      this.authFire.auth.signInWithPopup(new firebase.auth.TwitterAuthProvider());
+    }
+    
   }
 
   logout() {
+    this.usuario = {};
     this.authFire.auth.signOut();
   }
 
@@ -57,9 +65,10 @@ export class ChatService {
   agregarMensaje(texto: string){
     // TODO falta el UID del usuario
     let mensaje: Mensaje = {
-      nombre: 'Demo',
+      nombre: this.usuario.nombre,
       mensaje: texto,
-      fecha: new Date().getTime()
+      fecha: new Date().getTime(),
+      uid: this.usuario.uid
     };
 
     return this.itemsCollection.add(mensaje);
